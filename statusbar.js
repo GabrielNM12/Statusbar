@@ -88,47 +88,6 @@ class jQueryCopy {
 	}
 }
 
-window.addEventListener("load", async function(event) {
-	
-	var controllerObserver = new MutationObserver((entries)=> {
-
-		let vcontroller = entries[0].target;
-		let controller_left = vcontroller.getBoundingClientRect().x
-
-		let color = vcontroller.closest(".green") != null ? "green" : "blue";
-
-		for (const rupee of cp$(`.${color} .rupee`).elements) {
-
-			if(rupee.getBoundingClientRect().x <= controller_left) {
-				rupee.classList.add("lit");
-			}
-			else {
-				rupee.classList.remove("lit");
-			}
-		}
-	})
-
-	for (const vcontroller of cp$(".controller").elements) {
-		
-		controllerObserver.observe(vcontroller,{
-			attributes: {
-				x: true
-			}
-		});
-	}
-
-	window.current_mode = 0;
-	window.mode_list = [set_red, set_green, set_blue, close_modes];
-
-	window.modes_router = setInterval(async function(){
-
-		const set_mode = mode_list[current_mode];
-		await set_mode();
-	},timer_rotativo);
-
-	await set_red();
-});
-
 async function open_modes() {
 
 	cp$(".main-container").removeClass("shrink");
@@ -379,10 +338,45 @@ Number.prototype.clamp = function(min, max) {
 };
 
 // Please use event listeners to run functions.
-document.addEventListener('onLoad', function(obj) {
-	// obj will be empty for event list
-	// this will fire only once when the widget loads
-			console.log(obj);
+document.addEventListener('onLoad', async function(obj) {
+	
+	var controllerObserver = new MutationObserver((entries)=> {
+
+		let vcontroller = entries[0].target;
+		let controller_left = vcontroller.getBoundingClientRect().x
+
+		let color = vcontroller.closest(".green") != null ? "green" : "blue";
+
+		for (const rupee of cp$(`.${color} .rupee`).elements) {
+
+			if(rupee.getBoundingClientRect().x <= controller_left) {
+				rupee.classList.add("lit");
+			}
+			else {
+				rupee.classList.remove("lit");
+			}
+		}
+	})
+
+	for (const vcontroller of cp$(".controller").elements) {
+		
+		controllerObserver.observe(vcontroller,{
+			attributes: {
+				x: true
+			}
+		});
+	}
+
+	window.current_mode = 0;
+	window.mode_list = [set_red, set_green, set_blue, close_modes];
+
+	window.modes_router = setInterval(async function(){
+
+		const set_mode = mode_list[current_mode];
+		await set_mode();
+	},timer_rotativo);
+
+	await set_red();
 
 });
 
